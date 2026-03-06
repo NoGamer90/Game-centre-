@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Mini Minecraft Clone</title>
+  <style>
+    body { margin: 0; overflow: hidden; }
+    canvas { display: block; }
+  </style>
+</head>
+<body>
+<script src="https://cdn.jsdelivr.net/npm/three@0.150.1/build/three.min.js"></script>
+<script>
+let scene = new THREE.Scene();
+let camera = new THREE.PerspectiveCamera(75, window.innerWidth/window.innerHeight, 0.1, 1000);
+let renderer = new THREE.WebGLRenderer();
+renderer.setSize(window.innerWidth, window.innerHeight);
+document.body.appendChild(renderer.domElement);
+
+// Lighting
+let light = new THREE.DirectionalLight(0xffffff, 1);
+light.position.set(5,10,7).normalize();
+scene.add(light);
+
+// Create blocks
+function createBlock(x,y,z) {
+  let geometry = new THREE.BoxGeometry(1,1,1);
+  let material = new THREE.MeshLambertMaterial({ color: 0x8B4513 });
+  let cube = new THREE.Mesh(geometry, material);
+  cube.position.set(x,y,z);
+  scene.add(cube);
+}
+
+// Generate a small terrain
+for(let x= -5; x<=5; x++) {
+  for(let z= -5; z<=5; z++) {
+    createBlock(x,0,z);
+  }
+}
+
+camera.position.set(0,2,5);
+
+// Controls
+let keys = {};
+document.addEventListener("keydown", e => keys[e.key] = true);
+document.addEventListener("keyup", e => keys[e.key] = false);
+
+function animate() {
+  requestAnimationFrame(animate);
+  if(keys["w"]) camera.position.z -= 0.1;
+  if(keys["s"]) camera.position.z += 0.1;
+  if(keys["a"]) camera.position.x -= 0.1;
+  if(keys["d"]) camera.position.x += 0.1;
+  renderer.render(scene, camera);
+}
+animate();
+</script>
+</body>
+</html>
